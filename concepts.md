@@ -1070,3 +1070,454 @@ Test 2 False
 ```
 
 ---
+
+# 36. Locator Storage and Avoiding Repeated Selectors
+
+Bad:
+
+page.locator('a[href^="/c/"]').first.wait_for()
+
+chats = page.locator('a[href^="/c/"]')
+
+
+Better:
+
+chats = page.locator('a[href^="/c/"]')
+
+chats.first.wait_for()
+
+
+Reason:
+- Store locators in variables.
+- Avoid repeating selectors.
+- Makes code easier to read and maintain.
+
+
+# 37. Locator is a Search Instruction, Not the Actual Element
+
+Example:
+
+options_button = chat.locator(
+    'button[aria-label^="Open conversation options"]'
+)
+
+
+This does not immediately find the button.
+
+It stores instructions:
+
+"Find this button inside this chat when needed."
+
+
+The element is resolved when using:
+
+options_button.wait_for()
+
+or
+
+options_button.click()
+
+
+# 38. wait_for() vs first.wait_for()
+
+locator.wait_for()
+
+Use when expecting a specific element.
+
+Example:
+
+options_button.wait_for()
+
+
+Meaning:
+
+"Wait until this specific button exists and is visible."
+
+
+locator.first.wait_for()
+
+Use when the locator matches multiple elements but only one is needed.
+
+Example:
+
+chats = page.locator('a[href^="/c/"]')
+
+chats.first.wait_for()
+
+
+Meaning:
+
+"Wait until at least one conversation appears."
+
+
+# 39. Why Use first.wait_for() for Conversations
+
+The goal is not to wait for every conversation.
+
+The goal is to confirm the sidebar has loaded.
+
+
+Example:
+
+chats = page.locator('a[href^="/c/"]')
+
+chats.first.wait_for()
+
+
+Once the first conversation appears:
+- Sidebar exists.
+- Detection can begin.
+
+
+# 40. Avoid Using first to Hide Problems
+
+Bad:
+
+delete_buttons.first.click()
+
+
+Problem:
+
+If multiple delete buttons exist, it silently clicks the first one.
+
+
+Better:
+
+assert delete_buttons.count() == 1
+
+delete_buttons.click()
+
+
+Use .first only when you intentionally want the first matching element.
+
+
+# 41. Scoped Locators
+
+Bad:
+
+page.locator("button")
+
+
+Problem:
+
+Searches every button on the entire page.
+
+
+Better:
+
+chat.locator("button")
+
+
+Meaning:
+
+"Only search inside this conversation."
+
+
+Example:
+
+options_button = chat.locator(
+    'button[aria-label^="Open conversation options"]'
+)
+
+
+# 42. Conversation HTML Structure Discovery
+
+Found structure:
+
+<li>
+    <a href="/c/id">
+
+        Conversation title
+
+        <button>
+            Unpin button (only pinned chats)
+        </button>
+
+        <button>
+            Open conversation options
+        </button>
+
+    </a>
+</li>
+
+
+Important finding:
+
+The options button is inside the conversation link.
+
+
+Therefore:
+
+chat.locator(
+    'button[aria-label^="Open conversation options"]'
+)
+
+
+correctly finds the options button belonging to that chat.
+
+
+# 43. CSS Attribute Selectors
+
+Example:
+
+button[aria-label^="Open conversation options"]
+
+
+Breakdown:
+
+button
+- Find button elements.
+
+[aria-label]
+- Check the attribute.
+
+^=
+- Means "starts with."
+
+
+Matches:
+
+Open conversation options for Test 1
+
+Open conversation options for Test 2
+
+Open conversation options for Test 3
+
+
+# 44. Hover Reveals Hidden UI Elements
+
+Many websites hide action buttons until hover.
+
+
+Flow:
+
+chat.hover()
+
+options_button.click()
+
+
+Meaning:
+
+Conversation
+
+↓
+
+Hover
+
+↓
+
+Options button becomes available
+
+↓
+
+Click
+
+
+# 45. UI State Changes Affect Future Actions
+
+Problem:
+
+Open menu
+
+↓
+
+Next chat gets stuck
+
+
+Reason:
+
+The menu remains open and changes the page state.
+
+
+Solution:
+
+options_button.click()
+
+page.keyboard.press("Escape")
+
+
+General rule:
+
+After changing UI state:
+- Close menus.
+- Close dialogs.
+- Reset dropdowns.
+
+before continuing the loop.
+
+
+# 46. Playwright Automatically Waits
+
+Many Playwright actions already wait.
+
+Example:
+
+button.click()
+
+
+Automatically waits for:
+
+- Element exists.
+- Element is visible.
+- Element is enabled.
+- Element is stable.
+
+
+Explicit waiting:
+
+button.wait_for()
+
+
+Useful for:
+
+- Debugging.
+- Learning.
+- Confirming locators work.
+
+
+# 47. Persistent Browser Context Keeps Login
+
+Normal browser:
+
+browser = p.chromium.launch()
+
+page = browser.new_page()
+
+
+Creates a fresh browser profile.
+
+Result:
+
+Every run requires login.
+
+
+Persistent browser:
+
+context = p.chromium.launch_persistent_context(
+    user_data_dir="./chrome_profile",
+    channel="chrome",
+    headless=False
+)
+
+
+Stores:
+
+- Cookies.
+- Local storage.
+- Session data.
+
+
+Result:
+
+Login once.
+
+Future runs stay logged in.
+
+
+# 48. Playwright Inspector Helps Discover Locators
+
+Process:
+
+1. Pause execution.
+2. Open the UI element.
+3. Inspect element.
+4. Copy generated locator.
+
+
+Found menu locator:
+
+page.get_by_role(
+    "menu",
+    name="Open conversation options for Test"
+)
+
+
+Found delete locator:
+
+page.get_by_test_id(
+    "delete-chat-menu-item"
+)
+
+
+# 49. Prefer Stable Selectors
+
+Selector priority:
+
+
+Best:
+
+get_by_test_id()
+
+
+Example:
+
+page.get_by_test_id(
+    "delete-chat-menu-item"
+)
+
+
+Good:
+
+get_by_role()
+
+get_by_label()
+
+
+Less reliable:
+
+CSS classes
+
+
+Avoid:
+
+button.nth(10)
+
+
+because UI changes can break it.
+
+
+# 50. Current Project Flow
+
+Detection:
+
+Find conversations
+
+↓
+
+Extract title
+
+↓
+
+Detect pinned status
+
+
+Action:
+
+Conversation
+
+↓
+
+Hover
+
+↓
+
+Open options menu
+
+↓
+
+Find Delete option
+
+↓
+
+Handle confirmation dialog
+
+↓
+
+Delete
+
+
+Important:
+
+Keep detection separate from deletion.
+
+Always verify the target before performing destructive actions.

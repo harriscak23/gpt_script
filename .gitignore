@@ -1,2 +1,5 @@
 .venv/
 .env/
+chrome_profile/
+playwright-profile/
+storage_state.json
