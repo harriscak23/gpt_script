@@ -43,4 +43,4 @@ jobs:
           rm *.zip
       - name: Run cleaner
         run: |
-          python cleaner.py
+          python clean.py
