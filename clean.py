@@ -1,10 +1,9 @@
-import sys
 import logging
 
 from playwright.sync_api import sync_playwright
 
 from config import CHATGPT_URL, HEADLESS, CHANNEL
-from auth import get_session_path
+from auth import get_accounts, get_session_path
 
 
 CHAT_SELECTOR = 'a[href^="/c/"]'
@@ -55,7 +54,7 @@ def delete_all_unpinned(page):
     
     # Wait for ChatGPT sidebar to finish rendering
     # Not good practice
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(3000)
 
     chats = get_chats(page)
 
@@ -134,23 +133,45 @@ def open_sidebar(page):
 
     logger.info("Sidebar opened.")
 
-
-def main():
-
-    if len(sys.argv) != 2:
-        print(
-            "Usage: python cleaner.py <account>"
-        )
-        sys.exit(1)
-
-    account = sys.argv[1]
+def clean_account(browser, account):
 
     session_path = get_session_path(account)
 
     if not session_path.exists():
-        raise FileNotFoundError(
-            f"Missing session file: {session_path}"
+        logger.warning(
+            f"Skipping {account}: session not found."
         )
+        return
+
+    context = None
+
+    try:
+        context = browser.new_context(
+            storage_state=session_path
+        )
+
+        page = context.new_page()
+
+        page.goto(CHATGPT_URL)
+
+        logger.info(
+            f"Cleaning account: {account}"
+        )
+
+        open_sidebar(page)
+
+        delete_all_unpinned(page)
+
+    except Exception:
+        logger.exception(
+            f"Cleaner crashed for {account}."
+        )
+
+    finally:
+        if context:
+            context.close()
+
+def main():
 
     with sync_playwright() as p:
 
@@ -159,34 +180,14 @@ def main():
             headless=HEADLESS
         )
 
-        context = None
-
         try:
-            context = browser.new_context(
-                storage_state=session_path
-            )
-
-            page = context.new_page()
-
-            page.goto(CHATGPT_URL)
-
-            logger.info(
-                f"Cleaning account: {account}"
-            )
-
-            open_sidebar(page)
-
-            delete_all_unpinned(page)
-
-        except Exception:
-            logger.exception(
-                "Cleaner crashed."
+            for account in get_accounts():
+                clean_account(
+                    browser,
+                    account
             )
 
         finally:
-            if context:
-                context.close()
-
             browser.close()
 
 if __name__ == "__main__":

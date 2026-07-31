@@ -1904,7 +1904,7 @@ chat-cleaner/
 
 
 --------------------------------------------------
-65. Authentication architecture
+# 65. Authentication architecture
 --------------------------------------------------
 
 Old approach:
@@ -1939,7 +1939,7 @@ Logged-in ChatGPT session
 
 
 --------------------------------------------------
-66. Multiple account support
+# 66. Multiple account support
 --------------------------------------------------
 
 Run login:
@@ -1974,7 +1974,7 @@ The account name determines which session file is used.
 
 
 --------------------------------------------------
-67. config.py purpose
+# 67. config.py purpose
 --------------------------------------------------
 
 config.py stores shared settings.
@@ -1993,7 +1993,7 @@ Reason:
 
 
 --------------------------------------------------
-68. auth.py purpose
+# 68. auth.py purpose
 --------------------------------------------------
 
 auth.py centralizes session handling.
@@ -2017,7 +2017,7 @@ Future responsibilities:
 
 
 --------------------------------------------------
-69. Playwright synchronization concepts learned
+# 69. Playwright synchronization concepts learned
 --------------------------------------------------
 
 Important principle:
@@ -2058,7 +2058,7 @@ page.locator(
 
 
 --------------------------------------------------
-70. Sidebar state handling
+# 70. Sidebar state handling
 --------------------------------------------------
 
 Problem:
@@ -2109,7 +2109,7 @@ Sidebar is guaranteed open.
 
 
 --------------------------------------------------
-71. Virtualized/lazy-loaded chat list problem
+# 71. Virtualized/lazy-loaded chat list problem
 --------------------------------------------------
 
 Important discovery:
@@ -2138,7 +2138,7 @@ Because count() only represents loaded DOM elements.
 
 
 --------------------------------------------------
-72. New deletion algorithm
+# 72. New deletion algorithm
 --------------------------------------------------
 
 Old:
@@ -2181,7 +2181,7 @@ The script now works with virtualized lists.
 
 
 --------------------------------------------------
-73. Current selectors
+# 73. Current selectors
 --------------------------------------------------
 
 Conversation:
@@ -2222,7 +2222,7 @@ Chat history
 
 
 --------------------------------------------------
-74. Current cleaner.py design
+# 74. Current cleaner.py design
 --------------------------------------------------
 
 Functions:
@@ -2268,7 +2268,7 @@ Load more conversations.
 
 
 --------------------------------------------------
-75. Current login.py design
+# 75. Current login.py design
 --------------------------------------------------
 
 Purpose:
@@ -2299,7 +2299,7 @@ sessions/account.json
 
 
 --------------------------------------------------
-76. Current cleanup improvements completed
+# 76. Current cleanup improvements completed
 --------------------------------------------------
 
 Done:

@@ -5,9 +5,3 @@ SESSION_DIR = "sessions"
 CHANNEL = "chrome"
 
 HEADLESS = False
-
-ACCOUNTS = [
-    "cse",
-    "uw",
-    "f23"
-]
