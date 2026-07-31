@@ -37,17 +37,11 @@ jobs:
           echo "${{ secrets.UW_SESSION_ZIP }}" | base64 -d > uw.zip
           unzip -o uw.zip -d sessions
 
-          echo "${{ secrets.F23_SESSION_ZIP }}" | base64 -d > f23.zip
-          unzip -o f23.zip -d sessions
-          # Add as necessary for other accounts
+          echo "${{ secrets.F04_SESSION_ZIP }}" | base64 -d > f04.zip
+          unzip -o f04.zip -d sessions
+          
           rm *.zip
+
       - name: Run cleaner
         run: |
           python clean.py
-
-      - name: Upload screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: "*.png"

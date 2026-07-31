@@ -2,7 +2,7 @@ import logging
 
 from playwright.sync_api import sync_playwright
 
-from config import CHATGPT_URL, HEADLESS, CHANNEL
+from config import CHATGPT_URL, HEADLESS, CHANNEL, USER_AGENT
 from auth import get_accounts, get_session_path
 
 
@@ -147,19 +147,16 @@ def clean_account(browser, account):
 
     try:
         context = browser.new_context(
-            storage_state=session_path
+            storage_state=session_path,
+            user_agent=USER_AGENT,
+            viewport={
+                "width": 1280,
+                "height": 720
+            }
         )
-
         page = context.new_page()
 
         page.goto(CHATGPT_URL)
-
-        page.wait_for_timeout(5000)
-
-        page.screenshot(
-            path=f"{account}.png",
-            full_page=True
-        )
 
         logger.info(
             f"Cleaning account: {account}"
