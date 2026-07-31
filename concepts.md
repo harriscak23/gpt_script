@@ -2313,6 +2313,10 @@ Done:
 - Added lazy-loading handling
 - Added scroll-based discovery
 
-
+--------------------------------------------------
+# 77. Printing Parent Element
+--------------------------------------------------
+parent = chat.evaluate("el => el.parentElement.outerHTML")
+print(parent)
 
 
