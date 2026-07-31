@@ -4,4 +4,4 @@ SESSION_DIR = "sessions"
 
 CHANNEL = "chrome"
 
-HEADLESS = False
+HEADLESS = True

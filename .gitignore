@@ -7,8 +7,6 @@ venv/
 
 # Playwright sessions
 sessions/
-sessions.zip
-*.b64
 
 # OS
 .DS_Store

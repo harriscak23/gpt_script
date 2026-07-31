@@ -29,8 +29,17 @@ jobs:
 
       - name: Restore sessions
         run: |
-          echo "${{ secrets.SESSIONS_ZIP }}" | base64 -d > sessions.zip
-          unzip -o sessions.zip
+          mkdir -p sessions
+
+          echo "${{ secrets.CSE_SESSION_ZIP }}" | base64 -d > cse.zip
+          unzip -o cse.zip -d sessions
+
+          echo "${{ secrets.UW_SESSION_ZIP }}" | base64 -d > uw.zip
+          unzip -o uw.zip -d sessions
+
+          echo "${{ secrets.F23_SESSION_ZIP }}" | base64 -d > f23.zip
+          unzip -o f23.zip -d sessions
+          # Add as necessary for other accounts
 
       - name: Run cleaner
         run: |
