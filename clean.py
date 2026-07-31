@@ -154,6 +154,13 @@ def clean_account(browser, account):
 
         page.goto(CHATGPT_URL)
 
+        page.wait_for_timeout(5000)
+
+        page.screenshot(
+            path=f"{account}.png",
+            full_page=True
+        )
+
         logger.info(
             f"Cleaning account: {account}"
         )
