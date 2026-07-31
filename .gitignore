@@ -1,5 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
 .venv/
+venv/
 .env/
-chrome_profile/
-playwright-profile/
-storage_state.json
+
+# Playwright sessions
+sessions/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
