@@ -40,7 +40,7 @@ jobs:
           echo "${{ secrets.F23_SESSION_ZIP }}" | base64 -d > f23.zip
           unzip -o f23.zip -d sessions
           # Add as necessary for other accounts
-
+          rm *.zip
       - name: Run cleaner
         run: |
           python cleaner.py
